@@ -1,7 +1,7 @@
 import math
 import sys
 sys.stdout.reconfigure(encoding='utf-8')
-#인코딩 문제 해결 
+# 인코딩 문제 해결 
 
 class Graph:
     def __init__(self, vertices):
@@ -58,18 +58,35 @@ def haversine(coord1, coord2):
 locations = {
     "A": (37.5547, 126.9706),  # 서울역
     "B": (37.5796, 126.9770),  # 경복궁
-    "C": (37.5572, 126.9245)   # 홍대입구
+    "C": (37.5572, 126.9245),  # 홍대입구
+    "D": (37.4979, 127.0276),  # 강남역
+    "E": (37.5110, 127.0980),  # 잠실
+    "F": (37.5349, 126.9946),  # 이태원 
+    "G": (37.5826, 126.9830),  # 북촌한옥마을 
+    "H": (37.5663, 127.0094)   # 동대문디자인플라자 
+
 }
 # 위도 경도
 
 graph = Graph(locations.keys())
 # 위의 좌표 키로 그래프 생성
 
-for src in locations:
-    for dest in locations:
-        if src != dest:
-            graph.add_edge(src, dest, haversine(locations[src], locations[dest]))
-# 모든 지점들 간 거리 계산 후 간선 추가
+#드라마틱한 결과를 위해 A → B에 일부러 먼 거리 부여 (막힌 도로 표현)
+graph.add_edge("A", "B", 999)
+
+# 나머지 경로는 실제 거리 기반으로 연결
+graph.add_edge("A", "C", haversine(locations["A"], locations["C"]))
+graph.add_edge("C", "D", haversine(locations["C"], locations["D"]))
+graph.add_edge("D", "E", haversine(locations["D"], locations["E"]))
+graph.add_edge("E", "B", haversine(locations["E"], locations["B"]))
+# 이게 없으면 b까지 갈 방법이 없어서 우회경로 수동을 연결 
+# 다양한 경로 실험 및 최단 경로 분석 가능능
+
+#for src in locations:
+    #for dest in locations:
+        #if src != dest:
+            #graph.add_edge(src, dest, haversine(locations[src], locations[dest]))
+# 모든 지점들 간 거리 계산 후 간선 추가 / 모든 노드간 자동 연결하는 코드
 # src != dest = 자기 자신으로 가는 경로 제외
 
 start_point = "A"
